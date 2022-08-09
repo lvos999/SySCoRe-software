@@ -9,7 +9,8 @@ function [satProp,pol] = SynthesizeController(sysAbs,DFA,N,delta, initialonly)
 % output 2: robust control policy pol, with pol(:,i) indicating the optimal uhat when
 % the current state equals sysAbs.states(:,i).
 
-
+% TODO: 
+% - include epsilon
 if nargin<4
   delta = 0;
 end

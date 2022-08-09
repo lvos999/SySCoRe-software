@@ -8,11 +8,18 @@ function [sysAbs] = GridSpace_nd(sys, uhat,l, tol)
 %
 % 
 % Outputs:
-% sysabs with
-% P = matrix describing the transition probabilities.
-% P = [Pu1, Pu2, ...] is a concatenation of P-matrices for each uhat
-% P(i,j, 1:l) is the probability of going from state i to state j with
-% input uhat(:,1)
+% P = matrix describing the transition probabilities. 
+% P(i,j,k) is the probability of going from state i to state j with
+% input uhat(:,k)
+% output 2: abstract state space
+%
+% Recent updates
+% - May 19: updated the XhatSpace matrix. 
+%
+% TODO: 
+% - Add Bw
+% - Add a sink state, such that the columns of P add up to 1
+%
 %
 %% 
 try
@@ -52,10 +59,10 @@ try
 catch 
      error('sys.X does not exist or is not a Polyhedron')
 end 
-%if Bw ~= eye(dim) 
-%    error('Bw different from identity has not been implemented yet') 
-%end
-if dim > 2
+if Bw ~= eye(dim) 
+    error('Bw different from identity has not been implemented yet') 
+end
+if dim ~= 2
     error('Dimension different from 2 has not been implemented yet') 
 end 
 if length(l)==1
@@ -68,33 +75,6 @@ if length(mu)==1
     mu = mu*ones(1,dim);
 end
 
-%==================== Transform state space ========================
-if isequal(Bw,eye(dim))
-    Uz = eye(dim);
-    sigma_z = diag(sigma);
-    mu_z = eye(dim)*sys.mu;
-else
-    Sigma = sys.Bw*sigma*sys.Bw';
-    [Uz,Sz,~] = svd(Sigma);
-    sigma_z = diag(Sz);
-    mu_z = Uz'* sys.Bw*sys.mu;
-end
-
-if sum(abs(mu_z))>0
-warning('Implementation does not hold for mu not equal to zero')
-end
-
-% zstates = Uz'*xstates
-% xstates = Uz*zstates
-try
-Z = Uz'*sys.X;
-catch 
-     error('sys.X does not exist or is not a Polyhedron')
-end
-
-Z.computeVRep;
-Zl = min(Z.V);
-Zu = max(Z.V);
 
 %===================== Marginals for uniform grid==========================
 % width of single slot
@@ -117,17 +97,20 @@ for k = 1:length(uhat)
             xhat =XhatSpace(:,index);
             pij_ = 1;
             for d_index = 1:dim
-               cp =  diff(normcdf(mx{d_index}, A(d_index,:)*xhat+B(d_index,:)*uhat(:,k)+mu_z(d_index), sigma_z(d_index)));
+               cp =  diff(normcdf(mx{d_index}, A(d_index,:)*xhat+B(d_index,:)*uhat(:,k)+mu(d_index), sigma(d_index)));
                cp(cp<tol) = 0; % equivalent to (t1(2:length(t1))-t1(1:length(t1)-1));
                pij_ = reshape(pij_'*cp,1,[]);
             end
             P(index,:,k) = pij_;
     end
 end
+diary on
+toc
+diary off
 P = TransitionProbability(P);
 states = XhatSpace;
 beta = Polyhedron((diag(gridSize)*(ff2n(dim)-0.5)')');
-sysAbs = MDP_model(P,hx,states,beta,sys);
+sysAbs = MDP_model(P,hx,states,beta, sysLTI);
 sysAbs.inputs= uhat;          
 
 

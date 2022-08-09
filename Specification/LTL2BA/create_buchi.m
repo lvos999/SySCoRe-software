@@ -41,10 +41,8 @@ currentFile = mfilename( 'fullpath' );
                                                         %-d -f "<> p1"');
                                                         %%LTL 2 Buchi for
                                                         %our formula
-%assert(s~=0, string(r)) % Check whether successful
-% s = error code, s=0 is a successfull one
-% r = output string that includes the Buchi Automaton  
 
+                                                        
 % s = error code, s=0 is a successfull one
 % r = output string that includes the Buchi Automaton
 if s~=0 %error

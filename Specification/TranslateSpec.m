@@ -1,12 +1,14 @@
-function [DFA] = TranslateSpec(formula,AP,debug)
-% Written by Birgit van Huijgevoort, Sofie Haesaert
+function [DFA] = TranslateSpec(formula,AP)
+% Written by Birgit van Huijgevoort
 % input: LTL formula and atomic propositions
 % output: struct DFA consisting of:
 % states S
 % initial states S0
 % final states F
-% actions act consists of strings that activate the transitions
 % transitions trans with columns = actions as in DFA.act, row = state q, value = next state
+% actions act  consists of strings that activate the transitions
+%
+% TODO: Verify whether this struct/DFA.trans is a nice format to work with
 
 %%
 [B,alphabet] = spec2buchi(formula, AP);
@@ -27,15 +29,13 @@ for s = B.F
 end
 B.F = B.F(selfloop==1);
 
-if nargin>2 && debug
-    figure;
-    h=plot(B.aut,'EdgeLabel',B.aut.Edges.Prop);
-end
+figure;
+h=plot(B.aut,'EdgeLabel',B.aut.Edges.Prop);
 
 
 % Check whether we accepting state help (1) as self loop. 
 if length(B.F)~=1
-    error('Wrong number of accepting states this software is not able to write the specification to a DFA' )
+    error('Wrong number of accepting states this software is not able to write the spaceification to a DFA' )
 end
 
 if length(B.S0) ~=1

@@ -1,7 +1,4 @@
 %% Test Class Definition
-%   TODO: 
-%       - Add different test for different types of specifications including
-%            next, or, and, ...
 classdef tSpecifications < matlab.unittest.TestCase
 
 
@@ -25,8 +22,9 @@ classdef tSpecifications < matlab.unittest.TestCase
             testCase.verifyEqual(DFA.trans, trans);
 
 
-        end
 
+        
+        end
     end
 
 end

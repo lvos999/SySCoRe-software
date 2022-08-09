@@ -29,8 +29,8 @@ classdef SimRel
                 obj.states = varargin{2};
             end
             
-%             disp(['Set simulation relation with epsilon = ',...
-%                 num2str( obj.epsilon), ', delta = ', num2str(obj.delta)])
+            disp(['Set simulation relation with epsilon = ',...
+                num2str( obj.epsilon), ', delta = ', num2str(obj.delta)])
             
         end
         

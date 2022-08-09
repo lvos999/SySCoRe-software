@@ -29,8 +29,13 @@ classdef tMDP < matlab.unittest.TestCase
             testCase.verifyEqual(testCase.MDP.hx{2},[1,2]);
         end
 
-    % TODO: add tests for the MDP_model class. 
+        function testControlSynthesis(testCase)
+            %% Exercise function under test
+            % act = the value from the function under test
+            createArguments(testCase)
+            display(testCase.MDP.P)
+            testCase.verifyTrue(all(sum(testCase.MDP.P,1)==1))
 
-
+        end
     end
 end

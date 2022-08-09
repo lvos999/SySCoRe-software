@@ -11,14 +11,26 @@ function [sysLTIr,F] = ModelReduction(sysLTI,dimr,f)
 % - sysLTIr = reduced order affine system
 
 % get a decent guess for the feedback matrix
-[~,~,F]=dare(sysLTI.A,sysLTI.B,sysLTI.C'*sysLTI.C,f);
+[~,~, F]=dare(sysLTI.A,sysLTI.B,sysLTI.C'*sysLTI.C,f);
 
-% find reduced order model
 sysclosed=ss(sysLTI.A-sysLTI.B*F,[sysLTI.B,sysLTI.Bw],sysLTI.C,sysLTI.D,-1); %(ignore disturbance)
+%sysclosed=ss(sysLTI.A,[sysLTI.B,sysLTI.Bw],sysLTI.C,sysLTI.D,-1); %(ignore disturbance)
 sysred=balred(sysclosed,dimr);
 sysred=ss(tf(sysred));
 
-disp('Reduced order model obtained.')
+%%% HARD CODED!
+% Make sure that the reduced model has C = [1 0]
+if sysred.c(1)~= 1
+    T=eye(length(sysred.c));
+    T(length(sysred.c),length(sysred.c))= sysred.c(end);
+    sysred=ss2ss(sysred,T);
+
+    % flip outputs
+    T  = [0 1; 1 0];
+    sysred=ss2ss(sysred,T);
+end
+
+display('Reduced order model obtained' )
 
 %% Parameters of reduced order model
 Ar = sysred.A;

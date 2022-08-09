@@ -1,49 +1,24 @@
-function [state2act] = NonDeterministicLabelling(outputs,Polytopes,rel, varargin)
+function [state2act] = NonDeterministicLabelling(outputs,Polytopes,rel)
 %NonDeterministicLabelling Map the states to the labelling number
-
-efficient = false;
-  for i = 1:length(varargin)
-        % try to find 'TensorComputation'
-        if strcmp(varargin{i},'Efficient')
-            efficient = true;
-            sysAbs = varargin{i+1}; % should be sysAbs.zstates  or sysAbs.states 
-
-        end
-    
-  end
-  % remark sysAbs.outputs = sys.C*XhatSpace;
-
-
-
+% TODO: These compuations should be done over the output space. 
 epsil = rel.epsilon;
 Polytope_array_large = [];
 Polytope_array_small = [];
 Polytope_containment_large = [];
 Polytope_containtment_small = [];
 
-
-
 n_p = length(Polytopes); % number of polytopes
 for p = 1:n_p
-    [PolytopeLarge,PolytopeSmall] = IncreaseDecreasePolytope(Polytopes(p), epsil);
-    
-    Polytope_array_large = [Polytope_array_large;PolytopeLarge.computeVRep];
-    Polytope_array_small = [Polytope_array_small;PolytopeSmall.computeVRep];
+[PolytopeLarge,PolytopeSmall] = IncreaseDecreasePolytope(Polytopes(p), epsil);
+
+Polytope_array_large = [Polytope_array_large;PolytopeLarge.computeVRep];
+Polytope_array_small = [Polytope_array_small;PolytopeSmall.computeVRep];
 
 end
 
-if ~efficient
 % for all states compute whether they are contained in the polytopes
 Polytope_containment_large = Polytope_array_large.contains(outputs);
 Polytope_containment_small = Polytope_array_small.contains(outputs);
-else
-    Polytope_containment_large = EfficientContainment(Polytope_array_large, sysAbs);
-    Polytope_containment_small = EfficientContainment(Polytope_array_small, sysAbs);
-end
-
-
-
-
 state2act = [];
 bin_vals = dec2bin(0:2^n_p-1);
 for index = 1:2^n_p
@@ -62,9 +37,9 @@ for index = 1:2^n_p
     end
  
     if size(x_true,1)>1
-        state2act = [state2act; all(x_true)];
+    state2act = [state2act; all(x_true)];
     else
-        state2act = [state2act; x_true];
+    state2act = [state2act; x_true];
     end
  
 end

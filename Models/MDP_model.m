@@ -1,5 +1,5 @@
 classdef MDP_model
-    % LINMODEL Class of LTI systems with noise on the transitions. 
+    %LINMODEL Class of LTI systems with noise on the transitions. 
     % This model class can be used to grid the continuous dynamics to a
     % finite MDP
     
@@ -16,8 +16,6 @@ classdef MDP_model
         hx
         zstates
         l
-        Partition
-        outputmap
              
     end
     

@@ -21,19 +21,3 @@ https://www.mathworks.com/help/matlab/matlab_prog/write-test-that-uses-app-testi
 * the tests need to be fully automatic with no user input
 * test your code not built in MATLAB functionality (they are already tested)
 * any of the test in the folder (prefixed by t) can be used as examples
-
-
-% Version changes:
-% Fri 24 June 2022:
-%       - tPolytope is working, but doesnt include tests for the latest functions
-%       - tMDP is working, but doesnt coverage of the model class
-%       - tTensor is working
-%       - tSpecification is working, but should include more different type of specifications
-%       - tSimRel is working, but lacks full coverage of the model class. 
-
-%   TODO: 
-%       - tSpecification: Add different test for different types of specifications including
-%            next, or, and, ...
-%       - tMDP: add different methods associated to the MDP_model class
-%       - tSimRel: add more tests to cover the functionality of the class.
-%       - tPolytope: add coverage for the efficient Polytope computaiton.
